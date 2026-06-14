@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Miss Cynthia | English is FUN!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:'Nunito',sans-serif;background:linear-gradient(160deg,#e8f8f0 0%,#f0f9ff 40%,#f5f0ff 70%,#fff0f8 100%);min-height:100vh;overflow-x:hidden}
+
+    /* ── WELCOME VIDEO OVERLAY ── */
+    #welcome-overlay{
+      position:fixed;inset:0;background:#000;z-index:9999;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+    }
+    #welcome-video{
+      width:100%;height:100%;object-fit:cover;
+    }
+    /* Click-to-play screen */
+    #click-screen{
+      position:absolute;inset:0;z-index:3;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      background:linear-gradient(135deg,rgba(26,58,92,.82),rgba(168,230,207,.4));
+      cursor:pointer;
+    }
+    #click-screen .play-ring{
+      width:110px;height:110px;border-radius:50%;
+      background:rgba(255,255,255,.2);border:4px solid #fff;
+      display:flex;align-items:center;justify-content:center;
+      font-size:3.5rem;margin-bottom:20px;
+      animation:ringPulse 1.4s ease-in-out infinite;
+      backdrop-filter:blur(4px);
+    }
+    @keyframes ringPulse{
+      0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,255,255,.4)}
+      50%{transform:scale(1.08);box-shadow:0 0 0 18px rgba(255,255,255,0)}
+    }
+    #click-screen p{
+      font-family:'Fredoka One',cursive;font-size:1.5rem;color:#fff;
+      text-shadow:1px 2px 8px rgba(0,0,0,.5);letter-spacing:1px;
+    }
+    #click-screen small{
+      font-family:'Nunito',sans-serif;font-size:1rem;color:rgba(255,255,255,.8);
+      margin-top:8px;font-weight:700;
+    }
+    #skip-btn{
+      position:absolute;bottom:30px;right:30px;
+      background:rgba(255,255,255,.25);backdrop-filter:blur(6px);
+      border:2px solid rgba(255,255,255,.6);color:#fff;
+      padding:12px 28px;border-radius:30px;font-family:'Fredoka One',cursive;
+      font-size:1.1rem;cursor:pointer;transition:background .2s;z-index:4;
+      display:none;
+    }
+    #skip-btn:hover{background:rgba(255,255,255,.45)}
+    #overlay-logo{
+      position:absolute;top:24px;left:50%;transform:translateX(-50%);
+      display:flex;align-items:center;gap:12px;z-index:4;
+    }
+    #overlay-logo img{width:56px;height:56px;border-radius:50%;border:3px solid #fff;object-fit:cover}
+    #overlay-logo span{font-family:'Fredoka One',cursive;font-size:1.4rem;color:#fff;text-shadow:1px 2px 6px rgba(0,0,0,.4)}
+
+    /* ── TOPBAR ── */
+    .topbar{
+      background:linear-gradient(90deg,#a8e6cf,#b8d4ff,#f9c5d5);
+      padding:10px 28px;display:flex;align-items:center;justify-content:space-between;
+      box-shadow:0 3px 16px rgba(0,0,0,.09);flex-wrap:wrap;gap:10px;
+    }
+    .topbar-logo{display:flex;align-items:center;gap:12px;text-decoration:none}
+    .topbar-logo img{width:70px;height:70px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+    .logo-name{font-family:'Fredoka One',cursive;font-size:1.4rem;color:#1a3a5c;line-height:1.1}
+    .logo-sub{display:block;font-size:.75rem;color:#555;font-weight:800}
+    .topbar-nav{display:flex;gap:10px;flex-wrap:wrap}
+    .topbar-nav a{background:#fff;color:#1a3a5c;padding:7px 18px;border-radius:22px;font-weight:800;font-size:.85rem;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.1);transition:transform .2s,box-shadow .2s}
+    .topbar-nav a:hover{transform:translateY(-3px);box-shadow:0 6px 18px rgba(0,0,0,.15)}
+
+    /* ── HERO ── */
+    .hero{
+      position:relative;overflow:hidden;padding:50px 24px 40px;text-align:center;
+      background:linear-gradient(135deg,rgba(168,230,207,.55) 0%,rgba(184,212,255,.45) 35%,rgba(249,197,213,.5) 70%,rgba(200,230,168,.4) 100%);
+    }
+    /* Soft mint blob */
+    .hero::before{
+      content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);
+      width:700px;height:380px;
+      background:radial-gradient(ellipse at center,rgba(164,225,196,.65) 0%,rgba(167,220,255,.4) 45%,transparent 70%);
+      border-radius:50%;pointer-events:none;
+    }
+    .hero-inner{position:relative;z-index:1;max-width:900px;margin:0 auto}
+
+    .english-banner{
+      display:inline-block;background:linear-gradient(135deg,#f472b6,#e879a0);
+      border-radius:20px;padding:16px 60px;
+      box-shadow:0 8px 28px rgba(244,114,182,.38);position:relative;margin-bottom:6px;
+    }
+    .english-banner::before,.english-banner::after{
+      content:'';position:absolute;top:-20px;width:12px;height:44px;background:#8b9dc3;border-radius:4px;
+    }
+    .english-banner::before{left:90px}
+    .english-banner::after{right:90px}
+    .english-banner h1{
+      font-family:'Fredoka One',cursive;font-size:clamp(3rem,8vw,5.5rem);
+      color:#fff;letter-spacing:6px;text-shadow:3px 4px 0 rgba(0,0,0,.14);
+    }
+    .is-row{display:flex;align-items:center;justify-content:center;gap:18px;margin:10px 0}
+    .is-box{
+      background:#fff;border:3px solid #e879a0;border-radius:16px;
+      padding:10px 34px;font-family:'Fredoka One',cursive;font-size:2.4rem;color:#e879a0;
+      box-shadow:0 4px 14px rgba(232,121,160,.18);
+    }
+    .fun-word{
+      font-family:'Fredoka One',cursive;font-size:clamp(3.5rem,10vw,6.5rem);
+      background:linear-gradient(135deg,#e879a0 0%,#a855f7 50%,#60b4f5 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      line-height:1;filter:drop-shadow(2px 3px 0 rgba(0,0,0,.1));
+    }
+    .floaters{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+    .fe{position:absolute;font-size:2.2rem;animation:feFloat ease-in-out infinite;filter:drop-shadow(1px 2px 5px rgba(0,0,0,.13))}
+    @keyframes feFloat{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-18px) rotate(6deg)}}
+
+    /* ── BUBBLES ── */
+    .bubble-area{max-width:1000px;margin:40px auto;padding:0 24px}
+    .bubble-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+    @media(max-width:700px){.bubble-grid{grid-template-columns:1fr 1fr}}
+    @media(max-width:440px){.bubble-grid{grid-template-columns:1fr}}
+
+    .bubble{
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;
+      text-decoration:none;padding:28px 20px;border-radius:32px;
+      font-family:'Fredoka One',cursive;color:#fff;text-align:center;position:relative;
+      box-shadow:0 8px 28px rgba(0,0,0,.13);
+      transition:transform .25s cubic-bezier(.4,0,.2,1),box-shadow .25s;
+      animation:bubFloat 3s ease-in-out infinite;overflow:visible;
+    }
+    .bubble:nth-child(2){animation-delay:.5s}
+    .bubble:nth-child(3){animation-delay:1s}
+    .bubble:nth-child(4){animation-delay:1.5s}
+    .bubble:nth-child(5){animation-delay:.3s}
+    .bubble:nth-child(6){animation-delay:.8s}
+    @keyframes bubFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+    .bubble:hover{transform:translateY(-14px) scale(1.04)!important;box-shadow:0 18px 44px rgba(0,0,0,.18)!important}
+
+    .bubble-games   {background:linear-gradient(135deg,#60d4a0,#34c080)}
+    .bubble-video   {background:linear-gradient(135deg,#f472b6,#e879a0)}
+    .bubble-colour  {background:linear-gradient(135deg,#5ad4cc,#22b8b0)}
+    .bubble-teaching{background:linear-gradient(135deg,#a3e65a,#7dd828)}
+    .bubble-soon    {background:linear-gradient(135deg,#c0c8d8,#a8b0c0);cursor:default}
+    .bubble-apoyo   {background:linear-gradient(135deg,#b8a8f8,#a855f7)}
+
+    .bubble-emoji{font-size:3.2rem;animation:emojiWig 1.4s ease-in-out infinite}
+    @keyframes emojiWig{0%,100%{transform:rotate(-10deg) scale(1)}50%{transform:rotate(10deg) scale(1.2)}}
+    .bubble-label{font-size:1.1rem;letter-spacing:.5px;line-height:1.2}
+    .bubble-sub{font-family:'Nunito',sans-serif;font-size:.8rem;opacity:.9;font-weight:700}
+
+    .sticker{
+      position:absolute;top:-14px;left:14px;
+      font-family:'Fredoka One',cursive;font-size:.8rem;padding:4px 14px;
+      border-radius:20px;color:#fff;animation:stickerPop 1.6s ease-in-out infinite;
+      letter-spacing:1px;text-transform:uppercase;
+    }
+    @keyframes stickerPop{0%,100%{transform:scale(1) rotate(-4deg)}50%{transform:scale(1.15) rotate(4deg)}}
+    .s-wow{background:#f59e0b}
+    .s-yes{background:#3b82f6}
+    .s-super{background:#ef4444}
+    .s-new{background:#10b981}
+
+    .soon-badge{
+      position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+      background:rgba(255,255,255,.18);border-radius:32px;
+      font-family:'Fredoka One',cursive;font-size:1.1rem;color:#fff;
+      letter-spacing:1px;backdrop-filter:blur(2px);
+    }
+
+    /* ── TICKER ── */
+    .ticker-wrap{background:linear-gradient(90deg,#1a3a5c,#2563eb);overflow:hidden;padding:11px 0;margin-top:40px}
+    .ticker{display:flex;width:max-content;animation:tickerScroll 32s linear infinite;color:#fff;font-weight:800;font-size:1rem}
+    @keyframes tickerScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+    .ticker:hover{animation-play-state:paused}
+
+    footer{background:#1a3a5c;color:#fff;text-align:center;padding:22px 20px;margin-top:50px;font-size:.9rem}
+    footer img{width:44px;height:44px;border-radius:50%;vertical-align:middle;margin-right:10px;border:2px solid #a8e6cf}
+    #cc{position:fixed;top:0;left:0;pointer-events:none;z-index:9998;width:100%;height:100%}
+  </style>
+</head>
+<body>
+
+<!-- ══ WELCOME VIDEO OVERLAY ══ -->
+<div id="welcome-overlay">
+  <div id="overlay-logo">
+    <img src="assets/images/logo-misscynthia.png" alt="Miss Cynthia"/>
+    <span>Miss Cynthia</span>
+  </div>
+  <!-- Click to play screen -->
+  <div id="click-screen" onclick="startVideo()">
+    <div class="play-ring">▶</div>
+    <p>Click to Watch</p>
+    <small>🔊 With sound!</small>
+  </div>
+  <!-- Video hidden until clicked -->
+  <video id="welcome-video" playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;">
+    <source src="assets/video/welcome.mp4" type="video/mp4"/>
+  </video>
+  <button id="skip-btn" onclick="dismissOverlay()">Skip ▶</button>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="index.html" class="topbar-logo">
+    <img src="assets/images/logo-misscynthia.png" alt="Miss Cynthia"/>
+    <div>
+      <div class="logo-name">Miss Cynthia</div>
+      <span class="logo-sub">📚 English is FUN!</span>
+    </div>
+  </a>
+  <nav class="topbar-nav">
+    <a href="pages/videos.html">🎬 Inspirational Videos</a>
+    <a href="pages/colouring.html">🎨 Colouring</a>
+    <a href="pages/teaching.html">📚 Teaching</a>
+    <a href="pages/vocabulary.html">🎮 Vocabulary</a>
+    <a href="pages/comics.html">📖 Comics</a>
+    <a href="pages/apoyo-parental.html">❤️ Apoyo Parental</a>
+  </nav>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="floaters">
+    <span class="fe" style="left:5%;top:20%;animation-duration:2.5s;animation-delay:0s">😄</span>
+    <span class="fe" style="left:88%;top:15%;animation-duration:3s;animation-delay:.4s">🌟</span>
+    <span class="fe" style="left:3%;top:65%;animation-duration:2.8s;animation-delay:.8s">📖</span>
+    <span class="fe" style="left:90%;top:60%;animation-duration:3.2s;animation-delay:.2s">🎉</span>
+    <span class="fe" style="left:48%;top:5%;animation-duration:2.6s;animation-delay:1s">✏️</span>
+    <span class="fe" style="left:22%;top:80%;animation-duration:3s;animation-delay:.6s">🎨</span>
+    <span class="fe" style="left:72%;top:75%;animation-duration:2.4s;animation-delay:1.2s">🏆</span>
+  </div>
+  <div class="hero-inner">
+    <div class="english-banner"><h1>ENGLISH</h1></div>
+    <div class="is-row">
+      <div class="is-box">IS</div>
+      <div class="fun-word">FUN</div>
+    </div>
+  </div>
+</section>
+
+<!-- BUBBLES -->
+<div class="bubble-area">
+  <div class="bubble-grid">
+
+    <a href="pages/vocabulary.html" class="bubble bubble-games">
+      <div class="sticker s-wow">WOW</div>
+      <span class="bubble-emoji">😄</span>
+      <span class="bubble-label">GUESSING GAMES</span>
+      <span class="bubble-sub">Vocabulary fun!</span>
+    </a>
+
+    <a href="pages/videos.html" class="bubble bubble-video">
+      <div class="sticker s-yes">YES YOU CAN</div>
+      <span class="bubble-emoji">🎬</span>
+      <span class="bubble-label">INSPIRATIONAL VIDEOS</span>
+      <span class="bubble-sub">Watch &amp; learn!</span>
+    </a>
+
+    <a href="pages/colouring.html" class="bubble bubble-colour">
+      <div class="sticker s-super">SUPER!</div>
+      <span class="bubble-emoji">🎨</span>
+      <span class="bubble-label">COLOURING PAGES</span>
+      <span class="bubble-sub">Print &amp; colour!</span>
+    </a>
+
+    <a href="pages/teaching.html" class="bubble bubble-teaching">
+      <span class="bubble-emoji">📚</span>
+      <span class="bubble-label">TEACHING SOURCES</span>
+      <span class="bubble-sub">By level</span>
+    </a>
+
+    <a href="pages/comics.html" class="bubble bubble-soon">
+      <span class="bubble-emoji">📖</span>
+      <span class="bubble-label">COMIC STRIP</span>
+      <span class="bubble-sub">with a moral lesson</span>
+      <div class="soon-badge">🚧 Coming Soon</div>
+    </a>
+
+    <a href="pages/apoyo-parental.html" class="bubble bubble-apoyo">
+      <div class="sticker s-new">NEW</div>
+      <span class="bubble-emoji">❤️</span>
+      <span class="bubble-label">APOYO PARENTAL</span>
+      <span class="bubble-sub">Para padres &amp; apoderados</span>
+    </a>
+
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span>🌟 English is the key to the world! &nbsp;&nbsp;&nbsp;</span>
+    <span>📚 Read every day, grow every day! &nbsp;&nbsp;&nbsp;</span>
+    <span>🎉 Learning is fun with Miss Cynthia! &nbsp;&nbsp;&nbsp;</span>
+    <span>✨ YES YOU CAN! &nbsp;&nbsp;&nbsp;</span>
+    <span>🎮 Play · Learn · Grow! &nbsp;&nbsp;&nbsp;</span>
+    <span>🌟 English is the key to the world! &nbsp;&nbsp;&nbsp;</span>
+    <span>📚 Read every day, grow every day! &nbsp;&nbsp;&nbsp;</span>
+    <span>🎉 Learning is fun with Miss Cynthia! &nbsp;&nbsp;&nbsp;</span>
+    <span>✨ YES YOU CAN! &nbsp;&nbsp;&nbsp;</span>
+    <span>🎮 Play · Learn · Grow! &nbsp;&nbsp;&nbsp;</span>
+  </div>
+</div>
+
+<footer>
+  <img src="assets/images/logo-misscynthia.png" alt="Miss Cynthia">
+  © 2026 Miss Cynthia · English is FUN! 🌍
+</footer>
+
+<canvas id="cc"></canvas>
+<script src="js/confetti.js"></script>
+<script>
+const overlay = document.getElementById('welcome-overlay');
+const vid     = document.getElementById('welcome-video');
+const clickSc = document.getElementById('click-screen');
+const skipBtn = document.getElementById('skip-btn');
+
+function startVideo() {
+  // User clicked — now we can play WITH sound
+  clickSc.style.display = 'none';
+  vid.style.display = 'block';
+  skipBtn.style.display = 'block';
+  vid.play();
+}
+
+function dismissOverlay() {
+  overlay.style.transition = 'opacity .6s';
+  overlay.style.opacity = '0';
+  vid.pause();
+  setTimeout(() => {
+    overlay.style.display = 'none';
+    document.body.style.overflow = '';
+    setTimeout(() => { if(typeof launchConfetti==='function') launchConfetti(70); }, 300);
+  }, 600);
+}
+
+// Auto-dismiss when video ends
+vid.addEventListener('ended', dismissOverlay);
+vid.addEventListener('error', dismissOverlay);
+
+// Prevent body scroll while overlay is showing
+document.body.style.overflow = 'hidden';
+</script>
+</body>
+</html>
